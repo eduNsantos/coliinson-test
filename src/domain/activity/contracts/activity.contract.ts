@@ -1,6 +1,6 @@
 
-import { Location } from "../entities/location.entity";
+import { OpenMeteoForecastResponse } from "src/infrastructure/external/weather-api/open-meteo.types";
 
 export default interface ActivityContract {
-  findRankingByCityOrTown(search: string): Promise<Location>;
+  findRankingByCityOrTown(search: string): Promise<OpenMeteoForecastResponse>;
 }

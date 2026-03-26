@@ -1,5 +1,5 @@
 
-import ActivityContract from "src/domain/activity/contracts/activity.contract";
+import type ActivityContract from "src/domain/activity/contracts/activity.contract";
 import GetRankingByCityOrTownOutput from "../dtos/get-ranking-by-city-or-town-output.dto";
 import GetActivityRankingMapper from "../mappers/get-activity-ranking.mapper";
 import { Inject } from "@nestjs/common";
