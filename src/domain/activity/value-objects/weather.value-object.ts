@@ -23,19 +23,33 @@ export default class WeatherValueObject {
     return this.days.filter(day => day.isGoodForIndoor());
   }
 
+  private getAverageScore(scores: number[]): number {
+    if (scores.length === 0) {
+      return 0;
+    }
+
+    const total = scores.reduce((sum, score) => sum + score, 0);
+
+    return Math.round(total / scores.length);
+  }
+
   getSurfScore(): number {
-    return this.getBestDaysForSurf().length;
+    return this.getAverageScore(this.days.map(day => day.getSurfScore()));
   }
 
   getOutdoorScore(): number {
-    return this.getBestDaysForOutdoor().length;
+    return this.getAverageScore(this.days.map(day => day.getOutdoorScore()));
   }
 
   getSkiScore(): number {
-    return this.getBestDaysForSki().length;
+    return this.getAverageScore(this.days.map(day => day.getSkiScore()));
   }
 
   getIndoorScore(): number {
-    return this.getBestDaysForIndoor().length;
+    return this.getAverageScore(this.days.map(day => day.getIndoorScore()));
+  }
+
+  getAverageMaxTemp(): number {
+    return this.days.reduce((sum, d) => sum + d.maxTemperature, 0) / this.days.length;
   }
 }
