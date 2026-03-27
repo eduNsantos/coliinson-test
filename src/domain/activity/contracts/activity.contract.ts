@@ -1,6 +1,7 @@
-
-import { OpenMeteoForecastResponse } from "src/infrastructure/external/weather-api/open-meteo.types";
+import GeocodeValueObject from "../value-objects/geocode.value-object";
+import WeatherValueObject from "../value-objects/weather.value-object";
 
 export default interface ActivityContract {
-  findRankingByCityOrTown(search: string): Promise<OpenMeteoForecastResponse>;
+  getLocationCoordinates(city: string): Promise<GeocodeValueObject>;
+  getForecastByCoordinates(latitude: number, longitude: number): Promise<WeatherValueObject>;
 }

@@ -5,7 +5,11 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl"
+  url: "{{baseUrl}}/ranking?search=São Paulo"
+  params:
+    - name: search
+      value: São Paulo
+      type: query
   auth: inherit
 
 settings:

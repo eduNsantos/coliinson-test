@@ -1,0 +1,28 @@
+info:
+  name: Get coordinates
+  type: http
+  seq: 2
+
+http:
+  method: get
+  url: https://geocoding-api.open-meteo.com/v1/search?name=Santo André&count=1&language=pt&format=json
+  params:
+    - name: name
+      value: Santo André
+      type: query
+    - name: count
+      value: "1"
+      type: query
+    - name: language
+      value: pt
+      type: query
+    - name: format
+      value: json
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -18,6 +18,10 @@ request:
   variables:
     - name: baseUrl
       value: http://localhost:3000
+    - name: latitude
+      value: "-23.6638"
+    - name: longitude
+      value: "-46.53833"
 bundled: false
 extensions:
   bruno:
