@@ -1,21 +1,8 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import './App.css'
-
-type ActivityScore = {
-  activity: string
-  score: number
-}
-
-type RankingByDay = {
-  date: string
-  ranking: ActivityScore[]
-}
-
-type RankingError = {
-  error: string
-  details?: string
-}
+import { SearchForm } from './components/SearchForm'
+import { RankingCard } from './components/RankingCard'
+import type { RankingByDay, RankingError } from './types/ranking'
 
 function App() {
   const [search, setSearch] = useState('')
@@ -65,52 +52,38 @@ function App() {
   }
 
   return (
-    <main className="ranking-page">
-      <section className="card">
-        <h1>Ranking de Atividades</h1>
-        <p>Consulte sugestoes de atividades com base na previsao do tempo.</p>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 flex items-center justify-center px-4 py-10">
+      <section className="w-full max-w-3xl rounded-3xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-xl">
+        <h1 className="text-3xl font-bold text-slate-800 mb-1">
+          Ranking de Atividades
+        </h1>
+        <p className="text-sm text-slate-500 mb-8">
+          Consulte sugestoes de atividades com base na previsao do tempo.
+        </p>
 
-        <form onSubmit={handleSubmit} className="search-form">
-          <label htmlFor="search">Cidade, Estado ou Pais</label>
-          <div className="search-group">
-            <input
-              id="search"
-              name="search"
-              type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Ex.: Santos, SP"
-              autoComplete="off"
-              required
-            />
-            <button type="submit" disabled={isLoading}>
-              {isLoading ? 'Buscando...' : 'Buscar ranking'}
-            </button>
-          </div>
-        </form>
+        <SearchForm
+          search={search}
+          isLoading={isLoading}
+          onChange={setSearch}
+          onSubmit={handleSubmit}
+        />
 
-        {error ? <p className="feedback error">{error}</p> : null}
+        {error ? (
+          <p className="mt-5 text-sm font-semibold text-red-600">{error}</p>
+        ) : null}
 
         {!error && results.length > 0 ? (
-          <div className="results">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((item) => (
-              <article key={item.date} className="result-card">
-                <h2>{item.date}</h2>
-                <ul>
-                  {item.ranking.map((rank) => (
-                    <li key={`${item.date}-${rank.activity}`}>
-                      <span>{rank.activity}</span>
-                      <strong>{rank.score.toFixed(2)}</strong>
-                    </li>
-                  ))}
-                </ul>
-              </article>
+              <RankingCard key={item.date} item={item} />
             ))}
           </div>
         ) : null}
 
         {!error && !isLoading && results.length === 0 ? (
-          <p className="feedback">Nenhum resultado ainda. Faça uma busca.</p>
+          <p className="mt-6 text-center text-sm text-slate-400">
+            Nenhum resultado ainda. Faca uma busca.
+          </p>
         ) : null}
       </section>
     </main>
