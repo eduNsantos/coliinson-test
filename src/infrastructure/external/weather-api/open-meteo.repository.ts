@@ -13,7 +13,7 @@ export default class OpenMeteoRepository implements ActivityContract {
             url
         );
 
-        if (response.data.results.length === 0) {
+        if (!response.data?.results || response.data.results.length === 0) {
             throw new Error(`No results found for city: ${city}`);
         }
 
