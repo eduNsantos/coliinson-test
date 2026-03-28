@@ -26,7 +26,7 @@ src/
 ├── domain/ # Core business logic
 ├── application/ # Use cases and DTOs
 ├── infrastructure/ # External integrations (APIs, etc.)
-├── presentation/ # Controllers (NestJS)
+├── presentation/ # Resolvers GraphQL (NestJS)
 ```
 ---
 AI was used as a support tool during development, mainly for:
@@ -53,6 +53,7 @@ docker compose up --build
 Serviços disponíveis:
 - Frontend: http://localhost
 - Backend: http://localhost:3000
+- GraphQL: http://localhost:3000/graphql
 
 Para parar os containers:
 
@@ -75,6 +76,7 @@ npm run start:dev
 ```
 
 Backend disponível em: http://localhost:3000
+Playground GraphQL: http://localhost:3000/graphql
 
 2. Frontend
 
@@ -85,4 +87,30 @@ npm run dev
 ```
 
 Frontend disponível em: http://localhost:5173
+
+## Endpoint GraphQL
+
+Query principal:
+
+```graphql
+query GetRanking($input: GetRankingInput!) {
+	ranking(input: $input) {
+		date
+		ranking {
+			activity
+			score
+		}
+	}
+}
+```
+
+Variáveis:
+
+```json
+{
+	"input": {
+		"search": "Santos, SP"
+	}
+}
+```
 

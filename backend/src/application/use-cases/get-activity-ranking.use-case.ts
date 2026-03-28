@@ -1,6 +1,7 @@
 
 import type ActivityContract from "src/domain/activity/contracts/activity.contract";
 import { Inject } from "@nestjs/common";
+import { RankingByDayType } from "src/presentation/graphql/types/activity-ranking.type";
 
 export default class GetCityActivityRankingUseCase {
   constructor(
@@ -8,7 +9,7 @@ export default class GetCityActivityRankingUseCase {
     private activity: ActivityContract
   ) {}
 
-  async execute(search: string): Promise<any> {
+  async execute(search: string): Promise<RankingByDayType[]> {
     try {
 
       const coordinates = await this.activity.getLocationCoordinates(search);
@@ -32,11 +33,8 @@ export default class GetCityActivityRankingUseCase {
 
       return ranking;
     } catch (error) {
-      return {
-        error: 'An error occurred while fetching the activity ranking.',
-        details: error instanceof Error ? error.message : String(error)
-      }
-      throw error;
+      const details = error instanceof Error ? error.message : String(error);
+      throw new Error(`An error occurred while fetching the activity ranking. ${details}`);
     }
   }
 }

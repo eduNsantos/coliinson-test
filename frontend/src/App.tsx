@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { SearchForm } from './components/SearchForm'
 import { RankingCard } from './components/RankingCard'
-import type { RankingByDay, RankingError } from './types/ranking'
+import type { RankingByDay } from './types/ranking'
 
 function App() {
   const [search, setSearch] = useState('')
@@ -25,20 +25,47 @@ function App() {
     setError(null)
 
     try {
-      const response = await fetch(`/ranking?search=${encodeURIComponent(term)}`)
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            query GetRanking($input: GetRankingInput!) {
+              ranking(input: $input) {
+                date
+                ranking {
+                  activity
+                  score
+                }
+              }
+            }
+          `,
+          variables: {
+            input: {
+              search: term,
+            },
+          },
+        }),
+      })
 
       if (!response.ok) {
         throw new Error(`Falha na consulta. Status ${response.status}.`)
       }
 
-      const data = (await response.json()) as RankingByDay[] | RankingError
-
-      if (Array.isArray(data)) {
-        setResults(data)
-      } else {
-        setResults([])
-        setError(data.details ?? data.error)
+      const payload = (await response.json()) as {
+        data?: { ranking?: RankingByDay[] }
+        errors?: Array<{ message?: string }>
       }
+
+      if (payload.errors && payload.errors.length > 0) {
+        setResults([])
+        setError(payload.errors[0].message ?? 'Erro ao consultar o ranking.')
+        return
+      }
+
+      setResults(payload.data?.ranking ?? [])
     } catch (requestError) {
       setResults([])
       setError(

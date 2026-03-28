@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/ranking': 'http://localhost:3000',
+      '/graphql': 'http://localhost:3000',
     },
   },
 })
