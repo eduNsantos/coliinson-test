@@ -18,6 +18,8 @@ request:
   variables:
     - name: baseUrl
       value: http://localhost:3000
+    - name: rankingSearch
+      value: São Paulo
     - name: latitude
       value: "-23.6638"
     - name: longitude

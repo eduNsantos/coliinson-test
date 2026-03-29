@@ -4,16 +4,27 @@ info:
   seq: 1
 
 http:
-  method: GET
-  url: "{{baseUrl}}/ranking?search=São Paulo"
-  params:
-    - name: search
-      value: São Paulo
-      type: query
+  method: POST
+  url: "{{baseUrl}}/graphql"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |2-
+      
+            {
+              "query": "query GetRanking($input: GetRankingInput!) { ranking(input: $input) { date ranking { activity score } } }",
+              "variables": {
+                "input": {
+                  "search": "{{rankingSearch}}"
+                }
+              }
+            }
   auth: inherit
 
 settings:
-  encodeUrl: true
+  encodeUrl: false
   timeout: 0
   followRedirects: true
   maxRedirects: 5
