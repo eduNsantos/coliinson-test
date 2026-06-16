@@ -6,8 +6,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    host: '0.0.0.0',
     proxy: {
-      '/graphql': 'http://localhost:3000',
+      '/graphql': 'http://0.0.0.0:3000',
     },
   },
 })

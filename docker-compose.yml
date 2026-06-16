@@ -15,11 +15,16 @@ services:
     command: "npm run start:dev"
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: node:22-slim
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
     ports:
-      - "80:80"
+      - "5173:5173"
     depends_on:
       - backend
     restart: unless-stopped
+    command: ["npm", "run", "dev"]

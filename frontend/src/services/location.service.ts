@@ -1,33 +1,22 @@
-export async function getLocation(location: string) {
-  const response = await fetch('/location', {
+export async function getLocation(locationName: string) {
+  const response = await fetch('http://localhost:3000/graphql', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-        query: `
-            query GetRanking($input: GetRankingInput!) {
-                ranking(input: $input) {
-                date
-                ranking {
-                    activity
-                    score
-                }
-                }
-            }
-            `,
-            variables: {
-            input: {
-                search: location,
-            },
-            },
-        }),
-    })
+      query: `
+        query GetLocation($input: GetLocationInput!) {
+          location(input: $input) {
+            city
+            country
+            latitude
+            longitude
+          }
+        }
+      `,
+      variables: { input: { locationName } },
+    }),
+  })
 
-    if (!response.ok) {
-        throw new Error(`Falha na consulta. Status ${response.status}.`)
-    }
-
-
-    return response;
+  if (!response.ok) throw new Error(`Falha na consulta. Status ${response.status}.`)
+  return response
 }

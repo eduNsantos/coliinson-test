@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { SearchForm } from './components/SearchForm'
 import { RankingCard } from './components/RankingCard'
-import type { RankingByDay } from './types/ranking'
+import type { Location, RankingByDay } from './types/ranking'
 import { getRanking } from './services/ranking.service'
+import { getLocation } from './services/location.service'
 
 function App() {
   const [search, setSearch] = useState('')
+  const [suggestions, setSuggestions] = useState<Location[]>([])
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [results, setResults] = useState<RankingByDay[]>([])
@@ -41,23 +44,46 @@ function App() {
     }
   }
 
+  const fetchSuggestions = async (term: string) => {
+    setIsLoadingSuggestions(true)
+
+    try {
+      const response = await getLocation(term)
+      const payload = (await response.json()) as {
+        data?: { location?: Location[] }
+        errors?: Array<{ message?: string }>
+      }
+
+      setSuggestions(payload.data?.location ?? [])
+    } catch {
+      setSuggestions([])
+    } finally {
+      setIsLoadingSuggestions(false)
+    }
+  }
+
   useEffect(() => {
     const term = search.trim()
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
     if (term.length < 3) {
-      setResults([])
-      setError(null)
+      setSuggestions([])
       return
     }
 
-    debounceRef.current = setTimeout(() => fetchRanking(term), 1000)
+    debounceRef.current = setTimeout(() => fetchSuggestions(term), 1000)
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [search])
+
+  const handleSelectSuggestion = (location: Location) => {
+    setSearch(location.city)
+    setSuggestions([])
+    fetchRanking(location.city)
+  }
 
   const handleSubmit = (event: { preventDefault(): void }) => {
     event.preventDefault()
@@ -70,7 +96,7 @@ function App() {
     }
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
-
+    setSuggestions([])
     fetchRanking(term)
   }
 
@@ -87,8 +113,11 @@ function App() {
         <SearchForm
           search={search}
           isLoading={isLoading}
+          isLoadingSuggestions={isLoadingSuggestions}
+          suggestions={suggestions}
           onChange={setSearch}
           onSubmit={handleSubmit}
+          onSelectSuggestion={handleSelectSuggestion}
         />
 
         {error ? (
