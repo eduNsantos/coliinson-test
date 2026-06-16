@@ -1,7 +1,7 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import GetCityActivityRankingUseCase from 'src/application/use-cases/get-activity-ranking.use-case';
-import { GetRankingInput } from 'src/presentation/graphql/inputs/get-ranking.input';
-import { RankingByDayType } from 'src/presentation/graphql/types/activity-ranking.type';
+import GetCityActivityRankingUseCase from 'src/application/activity/use-cases/get-activity-ranking.use-case';
+import { GetRankingInput } from 'src/presentation/graphql/activity/get-ranking.input';
+import { RankingByDayType } from 'src/presentation/graphql/activity/types/activity-ranking.type';
 
 @Resolver()
 export class ActivityResolver {

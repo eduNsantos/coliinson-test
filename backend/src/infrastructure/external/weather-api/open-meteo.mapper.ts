@@ -1,4 +1,4 @@
-import GeocodeValueObject from "src/domain/activity/value-objects/geocode.value-object";
+import GeocodeValueObject from "src/domain/location/geocode.value-object";
 import WeatherDayValueObject from "src/domain/activity/value-objects/weather-day.value-object";
 import WeatherValueObject from "src/domain/activity/value-objects/weather.value-object";
 import { OpenMeteoForecastResponse, OpenMeteoGeocodingResponse } from "./open-meteo.types";

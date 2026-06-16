@@ -1,59 +1,22 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SearchForm } from './components/SearchForm'
 import { RankingCard } from './components/RankingCard'
 import type { RankingByDay } from './types/ranking'
+import { getRanking } from './services/ranking.service'
 
 function App() {
   const [search, setSearch] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [results, setResults] = useState<RankingByDay[]>([])
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const term = search.trim()
-
-    if (!term) {
-      setError('Informe uma cidade, estado ou pais para pesquisar.')
-      setResults([])
-      return
-    }
-
+  const fetchRanking = async (term: string) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const response = await fetch('/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            query GetRanking($input: GetRankingInput!) {
-              ranking(input: $input) {
-                date
-                ranking {
-                  activity
-                  score
-                }
-              }
-            }
-          `,
-          variables: {
-            input: {
-              search: term,
-            },
-          },
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Falha na consulta. Status ${response.status}.`)
-      }
-
+      const response = await getRanking(term)
       const payload = (await response.json()) as {
         data?: { ranking?: RankingByDay[] }
         errors?: Array<{ message?: string }>
@@ -76,6 +39,39 @@ function App() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  useEffect(() => {
+    const term = search.trim()
+
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    if (term.length < 3) {
+      setResults([])
+      setError(null)
+      return
+    }
+
+    debounceRef.current = setTimeout(() => fetchRanking(term), 1000)
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [search])
+
+  const handleSubmit = (event: { preventDefault(): void }) => {
+    event.preventDefault()
+
+    const term = search.trim()
+    if (!term) {
+      setError('Informe uma cidade, estado ou pais para pesquisar.')
+      setResults([])
+      return
+    }
+
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    fetchRanking(term)
   }
 
   return (

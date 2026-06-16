@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
-import GetRankingByCityOrTownDto from 'src/application/dtos/get-ranking-by-city-or-town.dto';
-import GetCityActivityRankingUseCase from 'src/application/use-cases/get-activity-ranking.use-case';
+import GetRankingByCityOrTownDto from 'src/application/activity/dtos/get-ranking-by-city-or-town.dto';
+import GetCityActivityRankingUseCase from 'src/application/activity/use-cases/get-activity-ranking.use-case';
 
 @Controller('ranking')
 export class ActivityController {

@@ -1,10 +1,10 @@
-import type { FormEvent } from 'react'
+import type { ComponentProps } from 'react'
 
 type Props = {
   search: string
   isLoading: boolean
   onChange: (value: string) => void
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onSubmit: ComponentProps<'form'>['onSubmit']
 }
 
 export function SearchForm({ search, isLoading, onChange, onSubmit }: Props) {

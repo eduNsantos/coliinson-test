@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ActivityModule } from './activity/activity.module';
+import { ActivityModule } from './application/activity/activity.module';
+import { LocationModule } from './application/location/location.module';
 
 @Module({
   imports: [
@@ -13,8 +12,7 @@ import { ActivityModule } from './activity/activity.module';
       playground: true,
     }),
     ActivityModule,
+    LocationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

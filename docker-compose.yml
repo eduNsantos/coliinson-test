@@ -9,6 +9,10 @@ services:
       NODE_ENV: production
       PORT: 3000
     restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: "npm run start:dev"
 
   frontend:
     build:
